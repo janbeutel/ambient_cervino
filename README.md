@@ -5,16 +5,22 @@ Matterhorn seismic analysis
 ## Getting started
 
 
+## Repository structure
+- ```bin```: code
+- ```data```: space for input data and converted products
+- ```results```: analysis products
+
 
 ## ToDo
 - Opensource? License?
 - Do we want to process partial hourly files?
 
 ## Authors and acknowledgment
-Show your appreciation to those who have contributed to the project.
+Valeria Strallo
+Chiara Colombero
+Samuel Weber
+Jan Beutel
 
 ## License
 For open source projects, say how it is licensed.
 
-## Project status
-If you have run out of energy or time for your project, put a note at the top of the README saying that development has slowed down or stopped completely. Someone may choose to fork your project or volunteer to step in as a maintainer or owner, allowing your project to keep going. You can also make an explicit request for maintainers.

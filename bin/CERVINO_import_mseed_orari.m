@@ -4,32 +4,32 @@
 %
 %
 
-fprintf("Good morning we are now converting miniseed files...\n")
+fprintf("Buon giorno. We are now converting hourly miniseed files...\n")
 
 clear all
 close all
 
-addpath("../mseed-lib");
+addpath("mseed-lib");
 % savepath;
 
 sens = 800; % V·s/m
 
+network = "1I";
 station = "MH44";
 channel = "EHN.D";
-year = "2025";
+year    = "2024";
 
 channels = ["EHE.D", "EHN.D", "EHZ.D"];
 
-for i = 1:length(channels)
-    channel = channels(i);
+for j = 1:length(channels)
+    channel = channels(j);
     
-
-    data_directory = "../../../../binaries/1I/" + station + "/" + year + "/" + channel;
+    data_directory = "../../../binaries/" + network + "/" + station + "/" + year + "/" + channel;
 
     % List all .miniseed files in the directory
     filelist = dir(fullfile(data_directory, '*.miniseed'));
 
-    fprintf('Processing year %s for channel: %s\n', year, channel);
+    fprintf('Processing year %s for network %s station %s channel: %s\n', year, network, station, channel);
     fprintf('Number of hourly files: %d\n\n', length(filelist));
     
     for i = 1:length(filelist)
@@ -53,23 +53,22 @@ for i = 1:length(channels)
         % Correzione della sensibilità (da μV a m/s)
         sig = sigd * 1e-6 / sens;
     
-        savename = erase(filename, '.miniseed') + ".mat";
-    
-        savedir = "../../results/" + station + "/" + year + "/" + channel;
-        if ~exist(savedir, 'dir')  % check if folder exists
-            mkdir(savedir);         % create folder if it doesn't exist
-        end
-    
         % lengthsignal = length(sig)
         % expected = FS * 3600
     
         % Verifica se il file contiene 1 ora di dati
         if length(sig) == FS * 3600;
+            savename = erase(filename, '.miniseed') + ".mat";
+        
+            savedir = "../data/" + network + "/"+ station + "/" + year + "/" + channel;
+            if ~exist(savedir, 'dir')  % check if folder exists
+                mkdir(savedir);         % create folder if it doesn't exist
+            end
             save(savedir + "/" + savename, 'sig', 't', 'FS');
         else
-            warning('File %s non contiene esattamente 1 ora di dati. Skippato.', filename);
+            warning('File %s non contiene esattamente 1 ora di dati %d != %d samples. Skippato.', filename, length(sig), FS * 3600);
         end
     
-        clearvars -except filelist sens i station year channel
+        clearvars -except filelist sens i network station year channel channels
     end
 end

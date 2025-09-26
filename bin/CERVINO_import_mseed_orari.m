@@ -43,7 +43,7 @@ for j = 1:length(channels)
         error("Could not open log file.");
     end
     % Write header logfile
-    fprintf(fid, "filename,numsamples,samplerate,matfilename\n");
+    fprintf(fid, "miniseedfilename,numsamples,samplerate,matfilename\n");
 
     for i = 1:length(filelist)
         filename = filelist(i).name;

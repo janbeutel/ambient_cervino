@@ -4,32 +4,42 @@
 %
 %
 
-fprintf("Buon giorno. We are now converting hourly miniseed files...\n")
+function CERVINO_import_mseed_orari(year, station, channel)
+    % year comes in as a number (e.g. 2018)
+    year = string(year);
 
-clear all
-close all
+    % clear all
+    close all
+    clearvars -except year station channel  % don’t clear year
 
-addpath("mseed-lib");
-% savepath;
-
-sens = 800; % V·s/m
-
-year    = "2018";
-network = "1I";
-station = "MH44";
-% channel = "EHN.D";
-channels = ["EHE.D", "EHN.D", "EHZ.D"];
-
-for j = 1:length(channels)
-    channel = channels(j);
+    % year    = "2018";
+    network = "1I";
+    % station = "MH44";
+    % channel = "EHE.D";
     
-    data_directory = "../../../binaries/" + network + "/" + station + "/" + year + "/" + channel;
+    addpath("mseed-lib");
+
+    fprintf("Buon giorno. We are now converting hourly miniseed files...\n")
+
+    sens = 800; % V·s/m
+
+    % channels = ["EHE.D", "EHN.D", "EHZ.D"];
+    % for j = 1:length(channels)
+    %     channel = channels(j);
+    
+    data_directory = "/mnt/ifi/nes/research/geophones/binaries/" + network + "/" + station + "/" + year + "/" + channel;
+    % data_directory = "../../../binaries/" + network + "/" + station + "/" + year + "/" + channel;
 
     % List all .miniseed files in the directory
     filelist = dir(fullfile(data_directory, '*.miniseed'));
 
     fprintf('Processing year %s for network %s station %s channel: %s\n', year, network, station, channel);
     fprintf('Number of hourly files: %d\n\n', length(filelist));
+    
+    savedir = "../data/" + network + "/"+ station + "/" + year + "/" + channel;
+    if ~exist(savedir, 'dir')  % check if folder exists
+        mkdir(savedir);         % create folder if it doesn't exist
+    end
     
     % Define log file path
     logfile = "../data/" + network + "/" + station + "/" + year + "/" + channel + "_" + year + ".log";
@@ -65,16 +75,12 @@ for j = 1:length(channels)
         % Correzione della sensibilità (da μV a m/s)
         sig = sigd * 1e-6 / sens;
     
-        fprintf("%s #samples %d sample rate %d\n", filename, length(sig), FS)
+        fprintf("%s numsamples %d sample rate %d\n", filename, length(sig), FS)
     
         % Verifica se il file contiene 1 ora di dati
         if length(sig) == FS * 3600;
             savename = erase(filename, '.miniseed') + ".mat";
         
-            savedir = "../data/" + network + "/"+ station + "/" + year + "/" + channel;
-            if ~exist(savedir, 'dir')  % check if folder exists
-                mkdir(savedir);         % create folder if it doesn't exist
-            end
             save(savedir + "/" + savename, 'sig', 't', 'FS');
             % Write line to logfile
             fprintf(fid, "%s,%d,%d,%s\n", filename, length(sig), FS, savename);
@@ -84,10 +90,9 @@ for j = 1:length(channels)
             fprintf(fid, "%s,%d,%d,\n", filename, length(sig), FS);
         end
     
-        clearvars -except filelist sens i network station year channel channels fid
+        clearvars -except filelist savedir sens i network station year channel channels fid
     end
 
     % Close logfile
     fclose(fid);
-
 end

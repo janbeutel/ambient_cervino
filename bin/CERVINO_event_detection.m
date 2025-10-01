@@ -29,7 +29,7 @@ function CERVINO_event_detection(year, station, channel)
    end
 
    % Define log file path
-   logfile = "../results/events/" + network + "/" + station + "/" + year + "/" + channel + "_" + year + ".log";
+   logfile = "../results/events/" + network + "/" + station + "/" + year + "/" + channel + "_" + year + ".csv";
    % Remove logfile if it exists
    if exist(logfile, "file")
       delete(logfile);
@@ -40,7 +40,7 @@ function CERVINO_event_detection(year, station, channel)
       error("Could not open log file.");
    end
    % Write header logfile
-   fprintf(fid, "matfilename,numevents,eventfilename\n");
+   fprintf(fid, "matfilename,numevents,eventfilename,detectiontime,windowlength,peak_amp,rms_amp,signalduration\n");
 
    for ite = 1:TOT
       % get the file name:
@@ -209,12 +209,21 @@ function CERVINO_event_detection(year, station, channel)
                   X=x(trig_array(n,1):trig_array(n,2));
                   SIG=trace_v(trig_array(n,1):trig_array(n,2),:);   
                end
+
+               dt=datetime(X(1), 'ConvertFrom', 'datenum');
                sec=(trig_array(n,1)/FS);
-               % sec_name=num2str(round(sec));
+               peak_amp=max(abs(SIG));
+               rms_amp=rms(SIG);
+
+               % signal duration
+               thr = 0.1 * max(abs(SIG));   % 10% of max amplitude
+               idx = find(abs(SIG) > thr);
+               duration = t(idx(end)) - t(idx(1));
+
                sec_name = sprintf('%04d', round(sec));
                savename=[filename(1:31) + "_" + sec_name + ".mat"];
                % Write line to logfile
-               fprintf(fid, "%s,%d,%s\n", filename, size(trig_array,1), savename);
+               fprintf(fid, "%s,%d,%s,%s,%d,%d,%d,%d\n", filename, size(trig_array,1), savename, datestr(dt, 'yyyy-mm-dd HH:MM:SS'), sec, peak_amp, rms_amp, duration);
                
                %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
                save(savedir + "/" + savename,'SIG','X','sec', 'FS')            

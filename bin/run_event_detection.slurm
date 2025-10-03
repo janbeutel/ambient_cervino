@@ -1,20 +1,19 @@
 #!/bin/bash
 #SBATCH --job-name=cervino_event_detection
-#SBATCH --output=/scratch/jan.beutel/slurm_logs/cervino_event_detection_%A_%a.out
+#SBATCH --output=/scratch/jan.beutel/slurm_logs/cervino_event_detection_%A_%a.log
 #SBATCH --error=/scratch/jan.beutel/slurm_logs/cervino_event_detection_%A_%a.err
 ###SBATCH --array=0-32%4        # 11 years × 3 channels = 33 tasks
-#SBATCH --array=0-23%3        # 8 years × 3 channels = 24 tasks
+#SBATCH --array=0-23%6          # 8 years × 3 channels = 24 tasks
 ###SBATCH --time=12:00:00
 #SBATCH --mem=10G
 #SBATCH --cpus-per-task=2
-#SBATCH --partition=IFIall 
-
-#IFIgpuL40S
+# #SBATCH --partition=IFIgpuL40S 
+#SBATCH --partition=IFIall
 
 # Define ranges
 #YEARS=(2015 2016 2017 2018 2019 2020 2021 2022 2023 2024 2025)
 #STATION=MH36
-YEARS=(2022 2019 2018 2020 2021 2023 2024 2025)
+YEARS=(2018 2019 2020 2021 2022 2023 2024 2025)
 STATION=MH44
 CHANNELS=(EHE.D EHN.D EHZ.D)
 

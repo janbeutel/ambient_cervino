@@ -1,6 +1,6 @@
 #!/bin/bash
 #SBATCH --job-name=cervino_import_mseed
-#SBATCH --output=/scratch/jan.beutel/slurm_logs/cervino_import_mseed_%A_%a.out
+#SBATCH --output=/scratch/jan.beutel/slurm_logs/cervino_import_mseed_%A_%a.log
 #SBATCH --error=/scratch/jan.beutel/slurm_logs/cervino_import_mseed_%A_%a.err
 ###SBATCH --array=0-32%4         # 11 years × 3 channels = 33 tasks
 #SBATCH --array=0-23%6           # 8 years × 3 channels = 24 tasks

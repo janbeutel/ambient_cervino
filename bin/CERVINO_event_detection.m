@@ -10,16 +10,10 @@ function CERVINO_event_detection(year, station, channel)
    % station = "MH44";
    % channel = "EHE.D";
 
-   % fprintf("Running CERVINO_event_detection for year %s, station %s, channel %s\n", year, station, channel)
-
    data_directory = "../data/" + network + "/" + station + "/" + year + "/" + channel;
    % List all .miniseed files in the directory
    FileList = dir(fullfile(data_directory, '*.mat'));
    TOT = size(FileList,1);
-
-   %PSD_all=zeros(16385,TOT);
-   % DVec=zeros(TOT,6);
-   % first=FileList(1).name;
 
    fprintf("Running CERVINO_event_detection for year %s, station %s, channel %s, and %d files\n", year, station, channel, TOT);
 
@@ -40,7 +34,7 @@ function CERVINO_event_detection(year, station, channel)
       error("Could not open log file.");
    end
    % Write header logfile
-   fprintf(fid, "matfilename,numevents,eventfilename,detectiontime,windowlength,peak_amp,rms_amp,signalduration\n");
+   fprintf(fid, "matfilename,numevents,eventfilename,detectiontime,windowlength,peak_amp,rms_amp,triggerduration\n");
 
    for ite = 1:TOT
       % get the file name:
@@ -190,12 +184,8 @@ function CERVINO_event_detection(year, station, channel)
          else
             fprintf("- %d events detected\n", size(trig_array,1))
 
-            % switch lower(type)
-            %    case {'ssd'}
-            %       events = trig_array;
-            %    case {'sst'}
-            %       events = tv(trig_array);
-            %    case {'wfa'}
+            % disp(trig_array)
+
             for n=1:size(trig_array,1)
                %fix = [2 5]; Fix event length to 2 seconds before trig on, 5 seconds
                %after trig on (All event are 7 seconds long), Change 'fix' as needed
@@ -211,22 +201,24 @@ function CERVINO_event_detection(year, station, channel)
                end
 
                dt=datetime(X(1), 'ConvertFrom', 'datenum');
-               sec=(trig_array(n,1)/FS);
+               sigseconds=(trig_array(n,1)/FS);
+               windowlength=(trig_array(n,2)-trig_array(n,1))/FS;
+               % siglength=length(SIG)
                peak_amp=max(abs(SIG));
                rms_amp=rms(SIG);
 
                % signal duration
                thr = 0.1 * max(abs(SIG));   % 10% of max amplitude
                idx = find(abs(SIG) > thr);
-               duration = t(idx(end)) - t(idx(1));
+               triggerduration = t(idx(end)) - t(idx(1));
 
-               sec_name = sprintf('%04d', round(sec));
+               sec_name = sprintf('%04d', round(sigseconds));
                savename=[filename(1:31) + "_" + sec_name + ".mat"];
                % Write line to logfile
-               fprintf(fid, "%s,%d,%s,%s,%d,%d,%d,%d\n", filename, size(trig_array,1), savename, datestr(dt, 'yyyy-mm-dd HH:MM:SS'), sec, peak_amp, rms_amp, duration);
+               fprintf(fid, "%s,%d,%s,%s,%d,%d,%d,%d\n", filename, size(trig_array,1), savename, datestr(dt, 'yyyy-mm-dd HH:MM:SS'), windowlength, peak_amp, rms_amp, triggerduration);
                
                %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-               save(savedir + "/" + savename,'SIG','X','sec', 'FS')            
+               save(savedir + "/" + savename,'SIG','X','sigseconds', 'FS')            
             end
          end
       end

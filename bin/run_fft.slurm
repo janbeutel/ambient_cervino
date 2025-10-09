@@ -3,9 +3,9 @@
 #SBATCH --output=/scratch/jan.beutel/slurm_logs/cervino_fft_%A_%a.log
 #SBATCH --error=/scratch/jan.beutel/slurm_logs/cervino_fft_%A_%a.err
 ###SBATCH --array=0-32%4        # 11 years × 3 channels = 33 tasks
-#SBATCH --array=0-23%8        # 8 years × 3 channels = 24 tasks
+#SBATCH --array=0-23%6        # 8 years × 3 channels = 24 tasks
 #SBATCH --time=2:00:00
-#SBATCH --mem=10G
+#SBATCH --mem=50G
 #SBATCH --cpus-per-task=2
 #SBATCH --partition=IFIgpuL40S  
 

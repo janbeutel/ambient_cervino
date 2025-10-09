@@ -1,14 +1,16 @@
 function CERVINO_fft(year, station, channel)
-   % year comes in as a number (e.g. 2018)
-   year = string(year);
+    addpath(genpath('lib'));
 
-   close all
-   clearvars -except year station channel  % don’t clear year
+    % year comes in as a number (e.g. 2018)
+    year = string(year);
 
-   % year    = "2018";
-   network = "1I";
-   % station = "MH44";
-   % channel = "EHE.D";
+    close all
+    clearvars -except year station channel  % don’t clear year
+
+    % year    = "2018";
+    network = "1I";
+    % station = "MH44";
+    % channel = "EHE.D";
 
     data_directory = "../data/" + network + "/" + station + "/" + year + "/" + channel;
     % List all .miniseed files in the directory
@@ -94,12 +96,12 @@ function CERVINO_fft(year, station, channel)
 
     end
 
-% save(savename,'FFT_all','DVec','VECT_F')
+    % save(savename,'FFT_all','DVec','VECT_F')
 
     %save CLASSE_MH44_provan 
     % save CLASS_MH44_N Hilbert Results DVec1
 
     %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
     savename=["fft_" + station + "_" + channel + "_" + year + ".mat"];
-    save(savedir + "/" + savename, 'FFT_all','DVec','VECT_F')
+save(savedir + "/" + savename, "FFT_all","DVec","VECT_F")
 end

@@ -170,5 +170,5 @@ function CERVINO_classificazione(year, station, channel)
 
     %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
     savename=["classification_" + station + "_" + channel + "_" + year + ".mat"];
-    save(savedir + "/" + savename, 'Hilbert', 'Results', 'DVec1')
+    save(savedir + "/" + savename, "Hilbert", "Results", "DVec1")
 end

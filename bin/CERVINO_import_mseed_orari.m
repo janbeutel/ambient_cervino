@@ -16,6 +16,7 @@ function CERVINO_import_mseed_orari(year, station, channel)
     network = "1I";
     % station = "MH44";
     % channel = "EHE.D";
+    location = "A";
     
     addpath("mseed-lib");
 
@@ -27,13 +28,13 @@ function CERVINO_import_mseed_orari(year, station, channel)
     % for j = 1:length(channels)
     %     channel = channels(j);
     
-    data_directory = "/mnt/ifi/nes/research/geophones/binaries/" + network + "/" + station + "/" + year + "/" + channel;
-    % data_directory = "../../../binaries/" + network + "/" + station + "/" + year + "/" + channel;
+    % data_directory = "/mnt/ifi/nes/research/geophones/binaries/" + network + "/" + station + "/" + year + "/" + channel;
+    data_directory = "../../../binaries/" + network + "/" + station + "/" + year + "/" + channel;
 
     % List all .miniseed files in the directory
-    filelist = dir(fullfile(data_directory, '*.miniseed'));
+    filelist = dir(fullfile(data_directory, network + "." + station + "." + location + "." + channel + '*.miniseed'));
 
-    fprintf('Processing year %s for network %s station %s channel: %s\n', year, network, station, channel);
+    fprintf('Processing year %s for network %s station %s location $s channel: %s\n', year, network, station, location, channel);
     fprintf('Number of hourly files: %d\n\n', length(filelist));
     
     savedir = "../data/" + network + "/"+ station + "/" + year + "/" + channel;
@@ -70,7 +71,8 @@ function CERVINO_import_mseed_orari(year, station, channel)
         sigd = sigd - mean(sigd);
         
         % Tempo relativo
-        t = td - td(1);
+        % t = td - td(1);
+        t = td;
     
         % Correzione della sensibilità (da μV a m/s)
         sig = sigd * 1e-6 / sens;
@@ -80,8 +82,8 @@ function CERVINO_import_mseed_orari(year, station, channel)
         % Verifica se il file contiene 1 ora di dati
         if length(sig) == FS * 3600;
             savename = erase(filename, '.miniseed') + ".mat";
-        
             save(savedir + "/" + savename, 'sig', 't', 'FS');
+
             % Write line to logfile
             fprintf(fid, "%s,%d,%d,%s\n", filename, length(sig), FS, savename);
         else

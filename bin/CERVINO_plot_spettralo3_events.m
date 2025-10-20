@@ -10,7 +10,7 @@ function CERVINO_plot_spettralo3_events(year, station, channel)
     % station = "MH44";
     % channel = "EHE.D";
 
-    data_directory = "../results/events/" + network + "/" + station + "/" + year + "/" + channel;
+    data_directory = "../results/events_parallel/" + network + "/" + station + "/" + year + "/" + channel;
     % List all .miniseed files in the directory
     FileList1 = dir(fullfile(data_directory, '*.mat'));
     TOT = size(FileList1,1);
@@ -18,13 +18,13 @@ function CERVINO_plot_spettralo3_events(year, station, channel)
 
     fprintf("Running CERVINO_spettralo3_trig for year %s, station %s, channel %s, and %d files\n", year, station, channel, TOT);
 
-    savedir = "../results/spectrograms/" + network + "/"+ station + "/" + year + "/" + channel;
+    savedir = "../results/spectrograms_parallel/" + network + "/"+ station + "/" + year + "/" + channel;
     if ~exist(savedir, 'dir')  % check if folder exists
         mkdir(savedir);         % create folder if it doesn't exist
     end
 
     % Define log file path
-    logfile = "../results/spectrograms/" + network + "/" + station + "/" + year + "/" + channel + "_" + year + ".csv";
+    logfile = "../results/spectrograms_parallel/" + network + "/" + station + "/" + year + "/" + channel + "_" + year + ".csv";
     % Remove logfile if it exists
     if exist(logfile, "file")
         delete(logfile);
@@ -46,13 +46,6 @@ function CERVINO_plot_spettralo3_events(year, station, channel)
 
         L=length(SIG);
 
-        dt = datetime(X(1), 'ConvertFrom', 'datenum');
-
-        fprintf("Event %d, station %s, channel %s, %s\n", ite, station, channel, datestr(dt, 'yyyy-mm-dd HH:MM:SS'))
-
-        % mm=floor(sec/60);
-        % ss=floor(sec-(mm*60));
-
         year=str2double(filename(17:20));
         month=str2num(filename(21:22));
         day=str2num(filename(23:24));
@@ -63,6 +56,16 @@ function CERVINO_plot_spettralo3_events(year, station, channel)
         ss=floor(sigseconds-(mm*60));
 
         DVec1(ite,:)=[year month day hour mm ss];
+        
+        % % build base datetime from filename (year, month, day, hour)
+        % base_dt = datetime(year, month, day, hour, 0, 0);
+
+        % % actual detection time
+        % dt = base_dt + seconds(trig_array(n,1)/FS);
+        % % dt = datetime(X(1), 'ConvertFrom', 'datenum')
+
+        fprintf("Event %d, station %s, channel %s, %d-%02d-%02d %02d:%02d:%02d\n", ite, station, channel, year, month, day, hour, mm ,ss)
+
         
         SR=1/FS;   
 
@@ -103,7 +106,7 @@ function CERVINO_plot_spettralo3_events(year, station, channel)
 
         h2 = subplot(4,1,1);
         plot (freq,sp)
-        xlabel ('Frequency [Hz]');
+        xlabel ('Frequency [Hz]');  
         ylabel ('');
         xlim([0 125]);
         ylabel ('A [m/s]');
@@ -124,10 +127,10 @@ function CERVINO_plot_spettralo3_events(year, station, channel)
         set(h3, 'Position', [0.1 0.1 0.85 0.3]);  % [left bottom width height]
 
         % ==== Add global title with parameters ====
-        sgtitle(sprintf('%s | %s | %s | %.7f | %.7f | %.3f', station, channel, datestr(dt, 'yyyy-mm-dd HH:MM:SS'), max(abs(sig)), rms(sig), duration), 'FontSize',10, 'FontName', 'Arial');
+        sgtitle(sprintf('%s | %s | %d-%02d-%02d %02d:%02d:%02d | %.7f | %.7f | %.3f', station, channel, year, month, day, hour, mm ,ss, max(abs(sig)), rms(sig), duration), 'FontSize',10, 'FontName', 'Arial');
 
         % Write line to logfile
-        fprintf(fid, "%s,%s,%d,%d,%d,%d,%d,%d,%d,%d,%d,%d\n", filename(1:36), datestr(dt, 'yyyy-mm-dd HH:MM:SS'), L/FS, max(abs(sig)), rms(sig), duration, year, month, day, hour, mm, ss);
+        fprintf(fid, "%s,%d-%02d-%02d %02d:%02d:%02d,%d,%d,%d,%d,%d,%d,%d,%d,%d,%d\n", filename(1:36), year, month, day, hour, mm ,ss , L/FS, max(abs(sig)), rms(sig), duration, year, month, day, hour, mm, ss);
 
         %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
         savename=[filename(1:36) + "_spectr"];

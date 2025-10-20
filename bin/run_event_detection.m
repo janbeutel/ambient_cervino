@@ -1,5 +1,6 @@
-year    = "2025"
+year    = "2018"
 station = "MH44"
-channel = "EHZ.D"
+channel = "EHN.D"
 
-CERVINO_event_detection(year, station, channel);
+% CERVINO_event_detection(year, station, channel);
+CERVINO_event_detection_parallel(year, station, channel);

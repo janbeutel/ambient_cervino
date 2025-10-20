@@ -165,48 +165,31 @@ function CERVINO_plot_hilbert(year, station)
         load(data_directory + filename) 
 
         load('fieldwork_dates.mat');
-        % load('rockfall_dates.mat');
-        % load('helicopter_dates.mat');
-        % load('MH27_temperature.mat');
-        % load('MH11_temperature.mat'); 
-        % time(1)=[];
-
-        data=Hilbert;
-        Dv=datenum(DVec1);
 
         start_fw=datenum(start_fw);
         end_fw=datenum(end_fw);
 
-        % start_rf=datenum(start_rf);
-        % end_rf=datenum(end_rf);
-
-        % start_eli=datenum(start_eli);
-        % end_eli=datenum(end_eli);
+        data=Hilbert;
+        Dv=datenum(DVec1);
 
         minDv=min(Dv);
         maxDv=max(Dv);
+        
+        % minDv_raw = min(Dv);
+        % maxDv_raw = max(Dv);
 
-        % time=datenum(time);
-        % idx=(time >= minDv & time <= maxDv);
-        % time=time(idx);
-        % T_100cm=T_100cm(idx);
+        % % Extract year from minDv
+        % minyear = datevec(minDv_raw);
 
-        % idx2=(DVc >=minDv & DVc<=maxDv);
-        % DVc=DVc(idx);
-        % Stats_HV_mat=Stats_HV_mat(:,idx);
-
-        % DVec=DVec1;
-        % a=find(Hilbert(:,9)>35);
-        % data(a,:)=[];
-        % Dv=datenum(DVec);
-        % Dv(a)=[];
+        % % Reset minDv and maxDv to full calendar year
+        % minPlot = datenum(minyear(1), 1, 1);      % January 1st
+        % maxPlot = datenum(minyear(1), 12, 31);    % December 31st
 
         data_f=data;
         Dv_f=Dv;
         a=find(Hilbert(:,9)>35);
         data_f(a,:)=[];
         Dv_f(a)=[];
-
 
         figure;
         tiledlayout(3,1, 'TileSpacing', 'compact', 'Padding', 'compact');
@@ -216,7 +199,7 @@ function CERVINO_plot_hilbert(year, station)
         % ---- Plot 1 ----
         nexttile
         plot(Dv, data(:,9),'.')
-        datetick('x','mm/yy', 'keeplimits')
+        datetick('x','yyyy-mm-dd', 'keeplimits')
         xlim([minDv maxDv])
         % xlabel('Date (mm/yy)')
         ylabel('F(Hz)')

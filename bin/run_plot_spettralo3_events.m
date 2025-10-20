@@ -1,4 +1,4 @@
-year    = "2025";
+year    = "2018";
 station = "MH44";
 channel = "EHE.D";
 

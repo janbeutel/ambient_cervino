@@ -34,7 +34,7 @@ function CERVINO_import_mseed_orari(year, station, channel)
     % List all .miniseed files in the directory
     filelist = dir(fullfile(data_directory, network + "." + station + "." + location + "." + channel + '*.miniseed'));
 
-    fprintf('Processing year %s for network %s station %s location $s channel: %s\n', year, network, station, location, channel);
+    fprintf('Processing year %s for network %s station %s location %s channel: %s\n', year, network, station, location, channel);
     fprintf('Number of hourly files: %d\n\n', length(filelist));
     
     savedir = "../data/" + network + "/"+ station + "/" + year + "/" + channel;

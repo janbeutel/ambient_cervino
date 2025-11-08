@@ -4,19 +4,19 @@
 %
 %
 
-function CERVINO_import_mseed_orari(year, station, channel)
+function CERVINO_import_mseed_orari(network, year, station, location, channel)
     % year comes in as a number (e.g. 2018)
     year = string(year);
 
     % clear all
     close all
-    clearvars -except year station channel  % don’t clear year
+    clearvars -except network year station location channel  % don’t clear year
 
     % year    = "2018";
-    network = "1I";
+    % network = "1I";
     % station = "MH44";
     % channel = "EHE.D";
-    location = "A";
+    % location = "A";
     
     addpath("mseed-lib");
 
@@ -43,7 +43,7 @@ function CERVINO_import_mseed_orari(year, station, channel)
     end
     
     % Define log file path
-    logfile = "../data/" + network + "/" + station + "/" + year + "/" + channel + "_" + year + ".log";
+    logfile = "../data/" + network + "/" + station + "/" + year + "/" + location + "." + channel + "_" + year + ".log";
     % Remove logfile if it exists
     if exist(logfile, "file")
         delete(logfile);

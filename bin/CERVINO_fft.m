@@ -102,6 +102,6 @@ function CERVINO_fft(network, year, station, location, channel)
     % save CLASS_MH44_N Hilbert Results DVec1
 
     %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-    savename=["fft_" + station + "_" + location + "_" + channel + "_" + year + ".mat"];
+    savename=["fft_" + station + "." + location + "." + channel + "." + year + ".mat"];
 save(savedir + "/" + savename, "FFT_all","DVec","VECT_F")
 end

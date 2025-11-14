@@ -2,11 +2,9 @@
 #SBATCH --job-name=cervino_import_mseed
 #SBATCH --output=/scratch/jan.beutel/slurm_logs/cervino_import_mseed_%A_%a.log
 #SBATCH --error=/scratch/jan.beutel/slurm_logs/cervino_import_mseed_%A_%a.err
-##SBATCH --array=0-5%9          # 8 years × 3 channels = 24 tasks
-###SBATCH --time=12:00:00
 #SBATCH --mem=40G
 #SBATCH --cpus-per-task=2
-#SBATCH --partition=IFIgpu2070
+#SBATCH --partition=IFIall
 
 # --- Configuration ---
 NETWORK=1I
@@ -51,7 +49,7 @@ TOTAL_TASKS=${#STATION_LIST[@]}
 # --- SLURM dynamic setup ---
 if [ -z "$SLURM_ARRAY_TASK_ID" ]; then
     echo "Submitting ${TOTAL_TASKS} jobs (max 8 concurrent)..."
-    sbatch --array=0-$((TOTAL_TASKS - 1))%10 "$0"
+    sbatch --array=0-$((TOTAL_TASKS - 1))%16 "$0"
     exit 0
 fi
 

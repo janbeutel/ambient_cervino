@@ -6,7 +6,6 @@
 #SBATCH --mem=25G
 #SBATCH --cpus-per-task=4
 #SBATCH --partition=IFIgpuL40S
-# SBATCH --array=0-??%8   # will be set dynamically below
 
 # --- Configuration ---
 NETWORK=1I

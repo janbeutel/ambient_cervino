@@ -24,10 +24,6 @@ function CERVINO_import_mseed_orari(network, year, station, location, channel)
 
     sens = 800; % V·s/m
 
-    % channels = ["EHE.D", "EHN.D", "EHZ.D"];
-    % for j = 1:length(channels)
-    %     channel = channels(j);
-    
     % data_directory = "/mnt/ifi/nes/research/geophones/binaries/" + network + "/" + station + "/" + year + "/" + channel;
     data_directory = "../../../binaries/" + network + "/" + station + "/" + year + "/" + channel;
 
@@ -43,7 +39,7 @@ function CERVINO_import_mseed_orari(network, year, station, location, channel)
     end
     
     % Define log file path
-    logfile = "../data/" + network + "/" + station + "/" + year + "/" + location + "." + channel + "_" + year + ".log";
+    logfile = "../data/" + network + "/" + station + "/" + year + "/" + location + "." + channel + "." + year + ".log";
     % Remove logfile if it exists
     if exist(logfile, "file")
         delete(logfile);

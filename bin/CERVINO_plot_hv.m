@@ -14,7 +14,7 @@ function CERVINO_plot_hv(network, year, station, location)
 
     data_directory = "../results/fft/" + network + "/" + station + "/" + year + "/";
     % List all .miniseed files in the directory
-    filelist = dir(fullfile(data_directory, network + "." + station + "." + location + "." + channel + '*.mat'));
+    filelist = dir(fullfile(data_directory, "fft_" + station + "." + location + '*.mat'));
     TOT = size(filelist,1);
 
     savedir = "../results/plots/";
@@ -22,23 +22,23 @@ function CERVINO_plot_hv(network, year, station, location)
         mkdir(savedir);         % create folder if it doesn't exist
     end
 
-    fprintf("Running CERVINO_hv for year %s, station %s, location %s, %d\n", year, station, location, TOT)
+    fprintf("Running CERVINO_hv for network %s, year %s, station %s, location %s, num files %d\n", network, year, station, location, TOT)
 
 
     channel = "EHE.D";
-    filename=["fft_" + station + "_" + location + "_" + channel + "_" + year + ".mat"];
+    filename=["fft_" + station + "." + location + "." + channel + "." + year + ".mat"];
     load(data_directory + filename) 
     FFT_E=FFT_all;
     DV_E=DVec;
 
     channel = "EHN.D";
-    filename=["fft_" + station + "_" + location + "_" + channel + "_" + year + ".mat"];
+    filename=["fft_" + station + "." + location + "." + channel + "." + year + ".mat"];
     load(data_directory + filename) 
     FFT_N=FFT_all;
     DV_N=DVec;
 
     channel = "EHZ.D";
-    filename=["fft_" + station + "_" + location + "_" + channel + "_" + year + ".mat"];
+    filename=["fft_" + station + "." + location + "." + channel + "." + year + ".mat"];
     load(data_directory + filename) 
     FFT_V=FFT_all;
     DV_V=DVec;
@@ -225,7 +225,7 @@ function CERVINO_plot_hv(network, year, station, location)
     
     box on
     
-    savename = "hv1_" + station + "." + location + "_" + year; 
+    savename = "hv1_" + station + "." + location + "." + year; 
     saveas(gcf, fullfile(savedir, savename + ".jpg"))
     %  saveas(gcf,[savename '_norm.fig'])  
 
@@ -240,7 +240,7 @@ function CERVINO_plot_hv(network, year, station, location)
     datetick('x','mm/yy','keeplimits')
     % xlabel('Date (mm/yy)')
     ylabel('Frequency (Hz)')
-    load('FFT_cmap.mat')
+    load('lib/FFT_cmap.mat')
     colormap(cmap)
     c=colorbar;
     c.Label.String='HV';
@@ -248,7 +248,7 @@ function CERVINO_plot_hv(network, year, station, location)
     set(gca,'layer','top')
     box on
     % sdf('20_15')
-    savename = "hv2_" + station + "." + location + "_" + year;
+    savename = "hv2_" + station + "." + location + "." + year;
     saveas(gcf, fullfile(savedir, savename + ".jpg"))
     %  saveas(gcf,[savename '_norm.fig'])  
 
@@ -272,7 +272,7 @@ function CERVINO_plot_hv(network, year, station, location)
     datetick('x','mm/yy','keeplimits')
     % xlabel('Date (mm/yy)')
     ylabel('Frequency (Hz)')
-    load('FFT_cmap.mat')
+    load('lib/FFT_cmap.mat')
     colormap(cmap);
     c=colorbar;
     c.Label.String='HV';
@@ -281,7 +281,7 @@ function CERVINO_plot_hv(network, year, station, location)
     box on
     % sdf('20_15')
 
-    savename = "hv3_" + station + "." + location + "_" + year;
+    savename = "hv3_" + station + "." + location + "." + year;
     saveas(gcf, fullfile(savedir, savename + ".jpg"))
     %  saveas(gcf,[savename '_norm.fig'])  
 end

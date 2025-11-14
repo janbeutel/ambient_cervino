@@ -5,11 +5,6 @@ function CERVINO_classificazione(network, year, station, location, channel)
     close all
     clearvars -except network year station location channel  % don’t clear year
 
-    % year    = "2018";
-    % network = "1I";
-    % station = "MH44";
-    % channel = "EHE.D";
-
     data_directory = "../results/events/" + network + "/" + station + "/" + year + "/" + channel;
     % List all .miniseed files in the directory
     filelist = dir(fullfile(data_directory, network + "." + station + "." + location + "." + channel + '*.mat'));
@@ -168,6 +163,6 @@ fprintf("Running CERVINO_classificazione for year %s, station %s, location %s, c
     % save CLASS_MH44_N Hilbert Results DVec1
 
     %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-    savename=["classification_" + station + "_" + location + "_" + channel + "_" + year + ".mat"];
+    savename=["classification_" + station + "." + location + "." + channel + "." + year + ".mat"];
     save(savedir + "/" + savename, "Hilbert", "Results", "DVec1")
 end

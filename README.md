@@ -1,9 +1,9 @@
 # Ambient Cervino
-Matterhorn seismic analysis
+Matterhorn seismic analysis toolbox
 
 
 ## Getting started
-Tools for processing Matterhorn seismic data. Typically one year, per station, per location, per channel. Intermediate formats are stored in ```.mat``` files.
+Tools for processing Matterhorn seismic data. Processing is typically done per one year, per station, per location, per channel. Intermediate formats are stored in ```.mat``` files.
 
 ### Toolflow
 - ```CERVINO_import_mseed_orari```: Importing waveform data into matlab, stores .mat files
@@ -16,27 +16,23 @@ Tools for processing Matterhorn seismic data. Typically one year, per station, p
 - ```CERVINO_plot_hilbert```: Plot stuff
 
 ### Automation using SLURM
-SLURM is the cluster batch processing system that is used to automatebatch processing accross array jobs. Typically per NETWORK, YEAR, STATION, LOCATION, CHANNEL
-
-```sbatch run_event_detection.slurm```
+SLURM is the cluster batch processing system that is used to automate batch processing accross array jobs. Each processing step contains a *.slurm file like ```sbatch run_event_detection.slurm``` to start a SLURM array job. The SLURM queue details need to be adapted for each specific cluster instance. 
 
 ## Repository structure
-- ```bin```: code
+- ```bin```: analysis toolbox code
 - ```data```: space for input data and converted products
-- ```results```: analysis products
+- ```results```: analysis products and plots
+- ```tools```: further analysis tools
 
 
 ## ToDo
-- Opensource? License?
 - Do we want to process partial hourly files?
 
 ## Authors and acknowledgment
 (c) 2025
-Valeria Strallo
-Chiara Colombero
-Samuel Weber
-Jan Beutel
+* Valeria Strallo - Politecnico di Torino
+* Chiara Colombero - Politecnico di Torino
+* Samuel Weber - SLF Davos
+* Jan Beutel - University of Innsbruck
 
-## License
-For open source projects, say how it is licensed.
 

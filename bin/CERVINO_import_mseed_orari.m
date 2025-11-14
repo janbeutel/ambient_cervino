@@ -92,7 +92,7 @@ function CERVINO_import_mseed_orari(network, year, station, location, channel)
             fprintf(fid, "%s,%d,%d,\n", filename, length(sig), FS);
         end
     
-        clearvars -except filelist savedir sens i network station year channel channels fid
+        clearvars -except filelist savedir sens i network station year location channel channels fid
     end
 
     % Close logfile

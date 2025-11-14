@@ -1,11 +1,11 @@
-function CERVINO_plot_hv(year, station)
+function CERVINO_plot_hv(network, year, station, location)
     addpath(genpath('lib'));
 
     % year comes in as a number (e.g. 2018)
     year = string(year);
 
     close all
-    clearvars -except year station channel  % don’t clear year
+    clearvars -except network year station location channel  % don’t clear year
 
     % year    = "2018";
     network = "1I";
@@ -14,31 +14,31 @@ function CERVINO_plot_hv(year, station)
 
     data_directory = "../results/fft/" + network + "/" + station + "/" + year + "/";
     % List all .miniseed files in the directory
-    FileList = dir(fullfile(data_directory, '*.mat'));
-    TOT = size(FileList,1);
+    filelist = dir(fullfile(data_directory, network + "." + station + "." + location + "." + channel + '*.mat'));
+    TOT = size(filelist,1);
 
     savedir = "../results/plots/";
     if ~exist(savedir, 'dir')  % check if folder exists
         mkdir(savedir);         % create folder if it doesn't exist
     end
 
-    fprintf("Running CERVINO_hv for year %s, station %s, %d\n", year, station, TOT)
+    fprintf("Running CERVINO_hv for year %s, station %s, location %s, %d\n", year, station, location, TOT)
 
 
     channel = "EHE.D";
-    filename=["fft_" + station + "_" + channel + "_" + year + ".mat"];
+    filename=["fft_" + station + "_" + location + "_" + channel + "_" + year + ".mat"];
     load(data_directory + filename) 
     FFT_E=FFT_all;
     DV_E=DVec;
 
     channel = "EHN.D";
-    filename=["fft_" + station + "_" + channel + "_" + year + ".mat"];
+    filename=["fft_" + station + "_" + location + "_" + channel + "_" + year + ".mat"];
     load(data_directory + filename) 
     FFT_N=FFT_all;
     DV_N=DVec;
 
     channel = "EHZ.D";
-    filename=["fft_" + station + "_" + channel + "_" + year + ".mat"];
+    filename=["fft_" + station + "_" + location + "_" + channel + "_" + year + ".mat"];
     load(data_directory + filename) 
     FFT_V=FFT_all;
     DV_V=DVec;
@@ -225,7 +225,7 @@ function CERVINO_plot_hv(year, station)
     
     box on
     
-    savename = "hv1_" + station + "_" + year; 
+    savename = "hv1_" + station + "." + location + "_" + year; 
     saveas(gcf, fullfile(savedir, savename + ".jpg"))
     %  saveas(gcf,[savename '_norm.fig'])  
 
@@ -248,7 +248,7 @@ function CERVINO_plot_hv(year, station)
     set(gca,'layer','top')
     box on
     % sdf('20_15')
-    savename = "hv2_" + station + "_" + year;
+    savename = "hv2_" + station + "." + location + "_" + year;
     saveas(gcf, fullfile(savedir, savename + ".jpg"))
     %  saveas(gcf,[savename '_norm.fig'])  
 
@@ -281,7 +281,7 @@ function CERVINO_plot_hv(year, station)
     box on
     % sdf('20_15')
 
-    savename = "hv3_" + station + "_" + year;
+    savename = "hv3_" + station + "." + location + "_" + year;
     saveas(gcf, fullfile(savedir, savename + ".jpg"))
     %  saveas(gcf,[savename '_norm.fig'])  
 end

@@ -1,29 +1,28 @@
-function CERVINO_plot_hilbert(year, station)
+function CERVINO_plot_hilbert(network, year, station, location)
     addpath(genpath('lib'));
 
     % year comes in as a number (e.g. 2018)
     year = string(year);
 
     close all
-    clearvars -except year station channel  % don’t clear year
+    clearvars -except network year station location channel  % don’t clear year
 
     % year    = "2018";
-    network = "1I";
+    % network = "1I";
     % station = "MH44";
     % channel = "EHE.D";
 
-
     data_directory = "../results/fft/" + network + "/" + station + "/" + year + "/";
     % List all .miniseed files in the directory
-    FileList = dir(fullfile(data_directory, '*.mat'));
-    TOT = size(FileList,1);
+    filelist = dir(fullfile(data_directory, '*.mat'));
+    TOT = size(filelist,1);
 
     savedir = "../results/plots/";
     if ~exist(savedir, 'dir')  % check if folder exists
         mkdir(savedir);         % create folder if it doesn't exist
     end
 
-    fprintf("Running CERVINO_plot_hibert for year %s, station %s, %d\n", year, station, TOT)
+    fprintf("Running CERVINO_plot_hilbert for year %s, station %s, %d\n", year, station, TOT)
 
 
     channel = "EHE.D";
@@ -158,10 +157,10 @@ function CERVINO_plot_hilbert(year, station)
 
         data_directory = "../results/classification/" + network + "/" + station + "/" + year + "/";
         % List all .miniseed files in the directory
-        FileList = dir(fullfile(data_directory, '*.mat'));
-        TOT = size(FileList,1);
+        filelist = dir(fullfile(data_directory, network + "." + station + "." + location + "." + channel + '*.mat'));
+        TOT = size(filelist,1);
 
-        filename=["classification_" + station + "_" + channel + "_" + year + ".mat"];
+        filename=["classification_" + station + "_" + location + "_" + channel + "_" + year + ".mat"];
         load(data_directory + filename) 
 
         load('fieldwork_dates.mat');
@@ -239,7 +238,7 @@ function CERVINO_plot_hilbert(year, station)
         % box on
         % sdf('20_15')
 
-        savename = "hilbert1_" + station + "_" + channel + "_" + year;
+        savename = "hilbert1_" + station + "." + location + "." + channel + "_" + year;
         saveas(gcf, fullfile(savedir, savename + ".jpg"))
         %  saveas(gcf,[savename '_norm.fig'])  
 
@@ -290,7 +289,7 @@ function CERVINO_plot_hilbert(year, station)
         end
         % sdf('20_15')
 
-        savename = "hilbert2_" + station + "_" + channel + "_" + year;
+        savename = "hilbert2_" + station + "." + location + "." + channel + "_" + year;
         saveas(gcf, fullfile(savedir, savename + ".jpg"))
         %  saveas(gcf,[savename '_norm.fig'])  
     end

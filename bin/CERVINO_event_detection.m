@@ -1,21 +1,26 @@
-function CERVINO_event_detection(year, station, channel)
+function CERVINO_event_detection(network, year, station, location, channel)
    % year comes in as a number (e.g. 2018)
    year = string(year);
 
+   % clear all
    close all
-   clearvars -except year station channel  % don’t clear year
+   clearvars -except network year station location channel  % don’t clear year
 
    % year    = "2018";
-   network = "1I";
+   % network = "1I";
    % station = "MH44";
    % channel = "EHE.D";
+   % location = "A";
 
    data_directory = "../data/" + network + "/" + station + "/" + year + "/" + channel;
-   % List all .miniseed files in the directory
-   FileList = dir(fullfile(data_directory, '*.mat'));
-   TOT = size(FileList,1);
 
-   fprintf("Running CERVINO_event_detection for year %s, station %s, channel %s, and %d files\n", year, station, channel, TOT);
+   % List all .miniseed files in the directory
+   filelist = dir(fullfile(data_directory, network + "." + station + "." + location + "." + channel + '*.mat'));
+   TOT = length(filelist);
+
+   % fprintf('Processing year %s for network %s station %s location %s channel: %s\n', year, network, station, location, channel);
+   % fprintf('Number of hourly files: %d\n\n', length(filelist));
+   fprintf('Running CERVINO_event_detection for year %s for network %s station %s location %s channel: %s total files: %d\n', year, network, station, location, channel, TOT);
 
    savedir = "../results/events/" + network + "/"+ station + "/" + year + "/" + channel;
    if ~exist(savedir, 'dir')  % check if folder exists
@@ -23,7 +28,7 @@ function CERVINO_event_detection(year, station, channel)
    end
 
    % Define log file path
-   logfile = "../results/events/" + network + "/" + station + "/" + year + "/" + channel + "_" + year + ".csv";
+   logfile = "../results/events/" + network + "/" + station + "/" + year + "/" + location + "." + channel + "_" + year + ".csv";
    % Remove logfile if it exists
    if exist(logfile, "file")
       delete(logfile);
@@ -51,8 +56,8 @@ function CERVINO_event_detection(year, station, channel)
 
    for ite = 1:TOT
       % Get file info
-      folder = FileList(ite).folder;
-      filename = FileList(ite).name;
+      folder = filelist(ite).folder;
+      filename = filelist(ite).name;
       fprintf("Processing %s/%s ", folder, filename);
 
       % Build full path and load safely
@@ -227,7 +232,7 @@ function CERVINO_event_detection(year, station, channel)
             end
          end
       end
-      clearvars -except FS FileList ite TOT edp network station year channel fid savedir
+      clearvars -except FS filelist ite TOT edp network station year location channel fid savedir
    end
    % Close logfile
    fclose(fid);

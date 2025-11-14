@@ -1,4 +1,4 @@
-function CERVINO_event_detection_parallel(year, station, channel)
+function CERVINO_event_detection_parallel(network, year, station, location, channel)
 % CERVINO_event_detection detects events in seismic data using STA/LTA.
 % Inputs:
 %   year    - string or number, e.g. '2018' or 2018
@@ -7,12 +7,11 @@ function CERVINO_event_detection_parallel(year, station, channel)
 
    year = string(year);
    close all
-   clearvars -except year station channel
+   clearvars -except network year station location channel
 
-   network = "1I";
    data_directory = "../data/" + network + "/" + station + "/" + year + "/" + channel;
-   FileList = dir(fullfile(data_directory,'*.mat'));
-   TOT = numel(FileList);
+   filelist = dir(fullfile(data_directory, network + "." + station + "." + location + "." + channel + '*.mat'));
+   TOT = numel(filelist);
 
    fprintf("Running CERVINO_event_detection for year %s, station %s, channel %s, with %d files\n", ...
       year, station, channel, TOT);
@@ -21,7 +20,7 @@ function CERVINO_event_detection_parallel(year, station, channel)
    savedir = "../results/events_parallel/" + network + "/" + station + "/" + year + "/" + channel;
    if ~exist(savedir,'dir'), mkdir(savedir); end
 
-   logfile = "../results/events_parallel/" + network + "/" + station + "/" + year + "/" + channel + "_" + year + ".csv";
+   logfile = "../results/events_parallel/" + network + "/" + station + "/" + year + "/" + location + "." + channel + "_" + year + ".csv";
    if exist(logfile,'file'), delete(logfile); end
 
    % Predefine edp (event detection parameters)
@@ -31,8 +30,8 @@ function CERVINO_event_detection_parallel(year, station, channel)
    DVec = zeros(TOT,6);
 
    % Pre-extract folders and filenames for parfor safety
-   folders = {FileList.folder};
-   filenames = {FileList.name};
+   folders = {filelist.folder};
+   filenames = {filelist.name};
 
    parfor ite = 1:TOT
       folder = folders{ite};

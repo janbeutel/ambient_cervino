@@ -1,21 +1,21 @@
-function CERVINO_fft(year, station, channel)
+function CERVINO_fft(network, year, station, location, channel)
     addpath(genpath('lib'));
 
     % year comes in as a number (e.g. 2018)
     year = string(year);
 
     close all
-    clearvars -except year station channel  % don’t clear year
+    clearvars -except network year station location channel  % don’t clear year
 
     % year    = "2018";
-    network = "1I";
+    % network = "1I";
     % station = "MH44";
     % channel = "EHE.D";
 
     data_directory = "../data/" + network + "/" + station + "/" + year + "/" + channel;
     % List all .miniseed files in the directory
-    FileList = dir(fullfile(data_directory, '*.mat'));
-    TOT = size(FileList,1);
+    filelist = dir(fullfile(data_directory, network + "." + station + "." + location + "." + channel + '*.mat'));
+    TOT = size(filelist,1);
 
     savedir = "../results/fft/" + network + "/"+ station + "/" + year;
         if ~exist(savedir, 'dir')  % check if folder exists
@@ -27,11 +27,11 @@ function CERVINO_fft(year, station, channel)
     FFT_all=zeros(500,TOT);
 
     for ite= 1:1:TOT
-        fprintf("File %d, station %s, channel %s, %s\n", ite, station, channel, FileList(ite).name)
+        fprintf("File %d, station %s, channel %s, %s\n", ite, station, channel, filelist(ite).name)
 
         % get the file name:
-        folder = FileList(ite).folder;
-        filename = FileList(ite).name;
+        folder = filelist(ite).folder;
+        filename = filelist(ite).name;
         load(folder + "/" + filename); 
 
         DVec(ite)=t(1);
@@ -92,7 +92,7 @@ function CERVINO_fft(year, station, channel)
         
         FFT_all(:,ite)=cFFT;
         
-        clearvars -except FFT_all VECT_F DVec FileList ite TOT VECT_F savename savedir network station year channel
+        clearvars -except FFT_all VECT_F DVec filelist ite TOT VECT_F savename savedir network station year location channel
 
     end
 
@@ -102,6 +102,6 @@ function CERVINO_fft(year, station, channel)
     % save CLASS_MH44_N Hilbert Results DVec1
 
     %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-    savename=["fft_" + station + "_" + channel + "_" + year + ".mat"];
+    savename=["fft_" + station + "_" + location + "_" + channel + "_" + year + ".mat"];
 save(savedir + "/" + savename, "FFT_all","DVec","VECT_F")
 end

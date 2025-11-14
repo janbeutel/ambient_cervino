@@ -1,6 +1,8 @@
-year    = "2018"
-station = "MH44"
-channel = "EHN.D"
+network  = "1I";
+year     = "2019";
+station  = "MH48";
+location = "B";
+channel  = "EHE.D";
 
-% CERVINO_event_detection(year, station, channel);
-CERVINO_event_detection_parallel(year, station, channel);
+CERVINO_event_detection(network, year, station, location, channel);
+% CERVINO_event_detection_parallel(network, year, station, location, channel);

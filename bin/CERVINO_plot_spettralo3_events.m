@@ -1,30 +1,30 @@
-function CERVINO_plot_spettralo3_events(year, station, channel)
+function CERVINO_plot_spettralo3_events(network, year, station, location, channel)
     % year comes in as a number (e.g. 2018)
     year = string(year);
 
     close all
-    clearvars -except year station channel  % don’t clear year
+    clearvars -except year network station location channel  % don’t clear year
 
     % year    = "2018";
-    network = "1I";
+    % network = "1I";
     % station = "MH44";
     % channel = "EHE.D";
 
-    data_directory = "../results/events_parallel/" + network + "/" + station + "/" + year + "/" + channel;
+    data_directory = "../results/events/" + network + "/" + station + "/" + year + "/" + channel;
     % List all .miniseed files in the directory
-    FileList1 = dir(fullfile(data_directory, '*.mat'));
-    TOT = size(FileList1,1);
+    filelist = dir(fullfile(data_directory, network + "." + station + "." + location + "." + channel + '*.mat'));
+    TOT = size(filelist,1);
     DVec1=zeros(TOT,6);
 
     fprintf("Running CERVINO_spettralo3_trig for year %s, station %s, channel %s, and %d files\n", year, station, channel, TOT);
 
-    savedir = "../results/spectrograms_parallel/" + network + "/"+ station + "/" + year + "/" + channel;
+    savedir = "../results/spectrograms/" + network + "/"+ station + "/" + year + "/" + channel;
     if ~exist(savedir, 'dir')  % check if folder exists
         mkdir(savedir);         % create folder if it doesn't exist
     end
 
     % Define log file path
-    logfile = "../results/spectrograms_parallel/" + network + "/" + station + "/" + year + "/" + channel + "_" + year + ".csv";
+    logfile = "../results/spectrograms/" + network + "/" + station + "/" + year + "/" + location + "." + channel + "_" + year + ".csv";
     % Remove logfile if it exists
     if exist(logfile, "file")
         delete(logfile);
@@ -40,8 +40,8 @@ function CERVINO_plot_spettralo3_events(year, station, channel)
     for ite= 1:1:TOT
 
         % get the file name:
-        folder = FileList1(ite).folder;
-        filename = FileList1(ite).name;
+        folder = filelist(ite).folder;
+        filename = filelist(ite).name;
         load(folder + "/" + filename); 
 
         L=length(SIG);
@@ -133,10 +133,10 @@ function CERVINO_plot_spettralo3_events(year, station, channel)
         fprintf(fid, "%s,%d-%02d-%02d %02d:%02d:%02d,%d,%d,%d,%d,%d,%d,%d,%d,%d,%d\n", filename(1:36), year, month, day, hour, mm ,ss , L/FS, max(abs(sig)), rms(sig), duration, year, month, day, hour, mm, ss);
 
         %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-        savename=[filename(1:36) + "_spectr"];
+        savename=[filename(1:39) + "_spectr"];
         % saveas(gcf,[savedir + "/" + filename + "_spectr.fig"])
         saveas(gcf,[savedir + "/" + savename + ".jpg"])
-        clearvars -except DVec1 ite FileList1 year network channel station fid savedir % SR FS
+        clearvars -except DVec1 ite filelist year network channel station fid savedir % SR FS
         close all
     end
 

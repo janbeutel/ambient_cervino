@@ -1,33 +1,33 @@
-function CERVINO_classificazione(year, station, channel)
-   % year comes in as a number (e.g. 2018)
-   year = string(year);
+function CERVINO_classificazione(network, year, station, location, channel)
+    % year comes in as a number (e.g. 2018)
+    year = string(year);
 
-   close all
-   clearvars -except year station channel  % don’t clear year
+    close all
+    clearvars -except network year station location channel  % don’t clear year
 
-   % year    = "2018";
-   network = "1I";
-   % station = "MH44";
-   % channel = "EHE.D";
+    % year    = "2018";
+    % network = "1I";
+    % station = "MH44";
+    % channel = "EHE.D";
 
     data_directory = "../results/events/" + network + "/" + station + "/" + year + "/" + channel;
     % List all .miniseed files in the directory
-    FileList = dir(fullfile(data_directory, '*.mat'));
-    TOT = size(FileList,1);
-    
+    filelist = dir(fullfile(data_directory, network + "." + station + "." + location + "." + channel + '*.mat'));
+    TOT = size(filelist,1);
+
     savedir = "../results/classification/" + network + "/"+ station + "/" + year;
     if ~exist(savedir, 'dir')  % check if folder exists
         mkdir(savedir);         % create folder if it doesn't exist
     end
 
-    fprintf("Running CERVINO_classificazione for year %s, station %s, channel %s, %d\n", year, station, channel, TOT)
+fprintf("Running CERVINO_classificazione for year %s, station %s, location %s, channel %s, %d\n", year, station, location, channel, TOT)
 
     for ite= 1:1:TOT
-        fprintf("Event %d, station %s, channel %s, %s\n", ite, station, channel, FileList(ite).name)
+        fprintf("Event %d, station %s, channel %s, %s\n", ite, station, channel, filelist(ite).name)
 
         % get the file name:
-        folder = FileList(ite).folder;
-        filename = FileList(ite).name;
+        folder = filelist(ite).folder;
+        filename = filelist(ite).name;
         load(folder + "/" + filename) 
 
         L=length(SIG);
@@ -160,15 +160,14 @@ function CERVINO_classificazione(year, station, channel)
         P5bis=total_bandwidth;
         Hilbert(ite,8)=P5bis;
 
-        clearvars -except k FileList TOT savedir Ampiezze Ampiezze_ST Results Amax_ST Hilbert Parametri DVec1 FS names network station year channel
-        %clearvars -except DVec1 k FileList1 TOT 
+        clearvars -except k filelist TOT savedir Ampiezze Ampiezze_ST Results Amax_ST Hilbert Parametri DVec1 FS names network station year location channel
+        %clearvars -except DVec1 k filelist1 TOT 
     end 
-
 
     %save CLASSE_MH44_provan 
     % save CLASS_MH44_N Hilbert Results DVec1
 
     %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-    savename=["classification_" + station + "_" + channel + "_" + year + ".mat"];
+    savename=["classification_" + station + "_" + location + "_" + channel + "_" + year + ".mat"];
     save(savedir + "/" + savename, "Hilbert", "Results", "DVec1")
 end

@@ -28,7 +28,7 @@ function CERVINO_event_detection(network, year, station, location, channel)
    end
 
    % Define log file path
-   logfile = "../results/events/" + network + "/" + station + "/" + year + "/" + location + "." + channel + "." + year + ".csv";
+   logfile = "../results/events/" + network + "/" + station + "/" + year + "/" + station + "." + location + "." + channel + "." + year + ".csv";
    % Remove logfile if it exists
    if exist(logfile, "file")
       delete(logfile);

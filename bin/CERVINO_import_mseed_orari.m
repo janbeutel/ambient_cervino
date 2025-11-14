@@ -39,7 +39,7 @@ function CERVINO_import_mseed_orari(network, year, station, location, channel)
     end
     
     % Define log file path
-    logfile = "../data/" + network + "/" + station + "/" + year + "/" + location + "." + channel + "." + year + ".log";
+    logfile = "../data/" + network + "/" + station + "/" + year + "/" + station + "." + location + "." + channel + "." + year + ".log";
     % Remove logfile if it exists
     if exist(logfile, "file")
         delete(logfile);
